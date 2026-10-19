@@ -169,3 +169,12 @@ This repository documents the project and its verified results. AWS resources mu
 ## Author
 
 AWS Data Engineering Project — Python, SQL, Amazon S3, AWS Lambda, Step Functions, RDS MySQL, and DBeaver.
+
+## Connect With Me
+
+I'm interested in AWS Cloud, DevOps, and Data Engineering opportunities.
+
+- **LinkedIn:** [Vaibhav Bhuse](https://www.linkedin.com/in/vaibhav-bhuse-530132288/)
+- **GitHub:** [vaibhavbhuse42](https://github.com/vaibhavbhuse42)
+
+Feel free to connect, share feedback, or discuss cloud and data engineering projects.
