@@ -1,0 +1,129 @@
+{
+  "Comment": "Olist CSV to RDS MySQL ETL pipeline",
+  "StartAt": "LoadCustomers",
+  "States": {
+    "LoadCustomers": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "REPLACE_WITH_YOUR_LAMBDA_ARN",
+        "Payload": {
+          "dataset": "customers"
+        }
+      },
+      "ResultPath": "$.result",
+      "Next": "CheckCustomers"
+    },
+    "CheckCustomers": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.result.Payload.statusCode",
+          "NumericEquals": 200,
+          "Next": "LoadOrders"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "LoadOrders": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "REPLACE_WITH_YOUR_LAMBDA_ARN",
+        "Payload": {
+          "dataset": "orders"
+        }
+      },
+      "ResultPath": "$.result",
+      "Next": "CheckOrders"
+    },
+    "CheckOrders": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.result.Payload.statusCode",
+          "NumericEquals": 200,
+          "Next": "LoadOrderItems"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "LoadOrderItems": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "REPLACE_WITH_YOUR_LAMBDA_ARN",
+        "Payload": {
+          "dataset": "order_items"
+        }
+      },
+      "ResultPath": "$.result",
+      "Next": "CheckOrderItems"
+    },
+    "CheckOrderItems": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.result.Payload.statusCode",
+          "NumericEquals": 200,
+          "Next": "LoadOrderPayments"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "LoadOrderPayments": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "REPLACE_WITH_YOUR_LAMBDA_ARN",
+        "Payload": {
+          "dataset": "order_payments"
+        }
+      },
+      "ResultPath": "$.result",
+      "Next": "CheckOrderPayments"
+    },
+    "CheckOrderPayments": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.result.Payload.statusCode",
+          "NumericEquals": 200,
+          "Next": "LoadProducts"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "LoadProducts": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "FunctionName": "REPLACE_WITH_YOUR_LAMBDA_ARN",
+        "Payload": {
+          "dataset": "products"
+        }
+      },
+      "ResultPath": "$.result",
+      "Next": "CheckProducts"
+    },
+    "CheckProducts": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.result.Payload.statusCode",
+          "NumericEquals": 200,
+          "Next": "PipelineSucceeded"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "PipelineSucceeded": {
+      "Type": "Succeed"
+    },
+    "PipelineFailed": {
+      "Type": "Fail",
+      "Error": "DatasetLoadFailed",
+      "Cause": "Lambda returned a non-200 statusCode"
+    }
+  }
+}
